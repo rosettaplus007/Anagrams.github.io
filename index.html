@@ -1,7 +1,7 @@
 <html lang="en" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface no-generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths -webkit- js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface no-generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths -webkit-"><head>
     <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-title" content="CodePen">
-    <title>Random Numbers | ROSETTA++</title>
+    <title>Tokenize a string with escaping | ROSETTA++</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
     <style media="" data-href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic">/* latin-ext */
     
@@ -235,94 +235,249 @@ a {
 }
     </style>
     <script>
-      var code2 = "#include <random>\n" +
-                "#include <functional>\n" +
+      var code2 = "#include <iostream>\n" +
+                "#include <string>\n" +
                 "#include <vector>\n" +
-                "#include <algorithm>\n" +
+                " \n" +
                 "using namespace std;\n" +
                 " \n" +
-                "int main()\n" +
-                "{\n" +
-                "  random_device seed;\n" +
-                "  mt19937 engine(seed());\n" +
-                "  normal_distribution<double> dist(1.0, 0.5);\n" +
-                "  auto rnd = bind(dist, engine);\n" +
+                "vector<string> tokenize(string input, char seperator, char escape) {\n" +
+                "\tvector<string> output;\n" +
+                "\tstring token = \"\";\n" +
                 " \n" +
-                "  vector<double> v(1000);\n" +
-                "  generate(v.begin(), v.end(), rnd);\n" +
-                "  return 0;\n" +
-                "}";
-      var code22 = "#include <cstdlib>   // for rand\n" +
-                "#include <cmath>     // for atan, sqrt, log, cos\n" +
-                "#include <algorithm> // for generate_n\n" +
+                "\tbool inEsc = false;\n" +
+                "\tfor (char ch : input) {\n" +
+                "\t\tif (inEsc) {\n" +
+                "\t\t\tinEsc = false;\n" +
+                "\t\t}\n" +
+                "\t\telse if (ch == escape) {\n" +
+                "\t\t\tinEsc = true;\n" +
+                "\t\t\tcontinue;\n" +
+                "\t\t}\n" +
+                "\t\telse if (ch == seperator) {\n" +
+                "\t\t\toutput.push_back(token);\n" +
+                "\t\t\ttoken = \"\";\n" +
+                "\t\t\tcontinue;\n" +
+                "\t\t}\n" +
+                "\t\ttoken += ch;\n" +
+                "\t}\n" +
+                "\tif (inEsc) {\n" +
+                "\t\tthrow new exception(\"Invalid terminal escape\");\n" +
+                "\t}\n" +
                 " \n" +
-                "double const pi = 4*std::atan(1.0);\n" +
-                " \n" +
-                "// simple functor for normal distribution\n" +
-                "class normal_distribution\n" +
-                "{\n" +
-                "public:\n" +
-                "  normal_distribution(double m, double s): mu(m), sigma(s) {}\n" +
-                "  double operator() const // returns a single normally distributed number\n" +
-                "  {\n" +
-                "    double r1 = (std::rand() + 1.0)/(RAND_MAX + 1.0); // gives equal distribution in (0, 1]\n" +
-                "    double r2 = (std::rand() + 1.0)/(RAND_MAX + 1.0);\n" +
-                "    return mu + sigma * std::sqrt(-2*std::log(r1))*std::cos(2*pi*r2);\n" +
-                "  }\n" +
-                "private:\n" +
-                "  const double mu, sigma;\n" +
-                "};\n" +
-                " \n" +
-                "int main()\n" +
-                "{\n" +
-                "  double array[1000];\n" +
-                "  std::generate_n(array, 1000, normal_distribution(1.0, 0.5));\n" +
-                "  return 0;\n" +
-                "}";
-      var code222 = "#include <vector>\n" +
-                "#include \"boost/random.hpp\"\n" +
-                "#include \"boost/generator_iterator.hpp\"    \n" +
-                "#include <boost/random/normal_distribution.hpp>\n" +
-                "#include <algorithm>\n" +
-                " \n" +
-                "typedef boost::mt19937 RNGType; ///< mersenne twister generator\n" +
-                " \n" +
-                "int main() {\n" +
-                "    RNGType rng;\n" +
-                "    boost::normal_distribution<> rdist(1.0,0.5); /**< normal distribution \n" +
-                "                           with mean of 1.0 and standard deviation of 0.5 */\n" +
-                " \n" +
-                "    boost::variate_generator< RNGType, boost::normal_distribution<> >\n" +
-                "                    get_rand(rng, rdist);  \n" +
-                " \n" +
-                "    std::vector<double> v(1000);\n" +
-                "    generate(v.begin(),v.end(),get_rand);\n" +
-                "    return 0;\n" +
-                "}";
-      var code3 = "double[] list = new double[1000];\n" +
-                "double mean = 1.0, std = 0.5;\n" +
-                "Random rng = new Random();\n" +
-                "for(int i = 0;i<list.length;i++) {\n" +
-                "  list[i] = mean + std * rng.nextGaussian();\n" +
-                "}";
-      var code4 = "function randomNormal() {\n" +
-                "  return Math.cos(2 * Math.PI * Math.random()) * Math.sqrt(-2 * Math.log(Math.random()))\n" +
+                "\toutput.push_back(token);\n" +
+                "\treturn output;\n" +
                 "}\n" +
                 " \n" +
-                "var a = []\n" +
-                "for (var i=0; i < 1000; i++){\n" +
-                "  a[i] = randomNormal() / 2 + 1\n" +
+                "int main() {\n" +
+                "\tstring sample = \"one^|uno||three^^^^|four^^^|^cuatro|\";\n" +
+                " \n" +
+                "\tcout << sample << endl;\n" +
+                "\tcout << \"[\";\n" +
+                "\tfor (auto t : tokenize(sample, '|', '^')) {\n" +
+                "\t\tcout << '\"' << t << \"\\\", \";\n" +
+                "\t}\n" +
+                "\tcout << \"]\" << endl;\n" +
+                " \n" +
+                "\treturn 0;\n" +
                 "}";
-      var code5 = "import random\n" +
-                "values = [random.gauss(1, .5) for i in range(1000)]";
-      var code55 = "def quick_check(numbers):\n" +
-                "    count = len(numbers)\n" +
-                "    mean = sum(numbers) / count\n" +
-                "    sdeviation = (sum((i - mean)**2 for i in numbers) / count)**0.5\n" +
-                "    return mean, sdeviation\n" +
-                "quick_check(values)";
-      var code555 = "values = [ random.normalvariate(1, 0.5) for i in range(1000)]\n" +
-                "quick_check(values)";
+      var code3 = "import java.util.*;\n" +
+                " \n" +
+                "public class TokenizeStringWithEscaping {\n" +
+                " \n" +
+                "    public static void main(String[] args) {\n" +
+                "        String sample = \"one^|uno||three^^^^|four^^^|^cuatro|\";\n" +
+                "        char separator = '|';\n" +
+                "        char escape = '^';\n" +
+                " \n" +
+                "        System.out.println(sample);\n" +
+                "        try {\n" +
+                "            System.out.println(tokenizeString(sample, separator, escape));\n" +
+                "        } catch (Exception e) {\n" +
+                "            System.out.println(e);\n" +
+                "        }\n" +
+                "    }\n" +
+                " \n" +
+                "    public static List<String> tokenizeString(String s, char sep, char escape)\n" +
+                "            throws Exception {\n" +
+                "        List<String> tokens = new ArrayList<>();\n" +
+                "        StringBuilder sb = new StringBuilder();\n" +
+                " \n" +
+                "        boolean inEscape = false;\n" +
+                "        for (char c : s.toCharArray()) {\n" +
+                "            if (inEscape) {\n" +
+                "                inEscape = false;\n" +
+                "            } else if (c == escape) {\n" +
+                "                inEscape = true;\n" +
+                "                continue;\n" +
+                "            } else if (c == sep) {\n" +
+                "                tokens.add(sb.toString());\n" +
+                "                sb.setLength(0);\n" +
+                "                continue;\n" +
+                "            }\n" +
+                "            sb.append(c);\n" +
+                "        }\n" +
+                "        if (inEscape)\n" +
+                "            throw new Exception(\"Invalid terminal escape\");\n" +
+                " \n" +
+                "        tokens.add(sb.toString());\n" +
+                " \n" +
+                "        return tokens;\n" +
+                "    }\n" +
+                "}";
+      var code4 = "function tokenize(s, esc, sep) {\n" +
+                "\tfor (var a=[], t='', i=0, e=s.length; i<e; i+=1) {\n" +
+                "\t\tvar c = s.charAt(i)\n" +
+                "\t\tif (c == esc) t+=s.charAt(++i)\n" +
+                "\t\telse if (c != sep) t+=c\n" +
+                "\t\telse a.push(t), t=''\t\t\n" +
+                "\t}\n" +
+                "\ta.push(t)\n" +
+                "\treturn a\n" +
+                "}\n" +
+                " \n" +
+                "var s = 'one^|uno||three^^^^|four^^^|^cuatro|'\n" +
+                "document.write(s, '<br>')\t\n" +
+                "for (var a=tokenize(s,'^','|'), i=0; i<a.length; i+=1) document.write(i, ': ', a[i], '<br>')";
+      var code444 = "((() => {\n" +
+                " \n" +
+                "    // tokenize :: String -> Character -> Character -> [String]\n" +
+                "    const tokenize = (charDelim, charEsc, str) => {\n" +
+                "        const [token, list, _] = str.split('')\n" +
+                "            .reduce(([aToken, aList, aEsc], x) => {\n" +
+                "                const\n" +
+                "                    blnBreak = !aEsc && x === charDelim,\n" +
+                "                    blnEscChar = !aEsc && x === charEsc;\n" +
+                " \n" +
+                "                return [\n" +
+                "                    blnBreak ? '' : (\n" +
+                "                        aToken + (blnEscChar ? '' : x)\n" +
+                "                    ),\n" +
+                "                    aList.concat(blnBreak ? aToken : []),\n" +
+                "                    blnEscChar\n" +
+                "                ];\n" +
+                "            }, ['', [], false]);\n" +
+                " \n" +
+                "        return list.concat(token);\n" +
+                "    };\n" +
+                " \n" +
+                "    // splitEsc :: String -> [String]\n" +
+                "    const splitEsc = str => tokenize('|', '^', str);\n" +
+                " \n" +
+                " \n" +
+                "    // TEST\n" +
+                "    // show :: a -> String\n" +
+                "    const show = x => JSON.stringify(x, null, 2);\n" +
+                " \n" +
+                "    return splitEsc(\n" +
+                "            'one^|uno||three^^^^|four^^^|^cuatro|',\n" +
+                "        )\n" +
+                "        .map(show)\n" +
+                "        .join('\\n');\n" +
+                "}))();";
+      var code44 = "(function () {\n" +
+                "    'use strict';\n" +
+                " \n" +
+                "    // tokenize :: String -> Character -> Character -> [String]\n" +
+                "    function tokenize(str, charDelim, charEsc) {\n" +
+                "        var dctParse = str.split('')\n" +
+                "            .reduce(function (a, x) {\n" +
+                " \n" +
+                "                var blnEsc = a.esc,\n" +
+                "                    blnBreak = !blnEsc && x === charDelim,\n" +
+                "                    blnEscChar = !blnEsc && x === charEsc;\n" +
+                " \n" +
+                "                return {\n" +
+                "                    esc: blnEscChar,\n" +
+                "                    token: blnBreak ? '' : (\n" +
+                "                        a.token + (blnEscChar ? '' : x)\n" +
+                "                    ),\n" +
+                "                    list: a.list.concat(blnBreak ? a.token : [])\n" +
+                "                };\n" +
+                "            }, {\n" +
+                "                esc: false,\n" +
+                "                token: '',\n" +
+                "                list: []\n" +
+                "            });\n" +
+                " \n" +
+                "        return dctParse.list.concat(\n" +
+                "            dctParse.token\n" +
+                "        );\n" +
+                "    }\n" +
+                " \n" +
+                "    return tokenize(\n" +
+                "            'one^|uno||three^^^^|four^^^|^cuatro|',\n" +
+                "            '|','^'\n" +
+                "        )\n" +
+                "        .join('\\n');\n" +
+                " \n" +
+                "})();";
+      var code5 = "def token_with_escape(a, escape = '^', separator = '|'):\n" +
+                "    '''\n" +
+                "        Issue  python -m doctest thisfile.py  to run the doctests.\n" +
+                " \n" +
+                "        >>> print(token_with_escape('one^|uno||three^^^^|four^^^|^cuatro|'))\n" +
+                "        ['one|uno', '', 'three^^', 'four^|cuatro', '']\n" +
+                "    '''\n" +
+                "    result = []\n" +
+                "    token = ''\n" +
+                "    state = 0\n" +
+                "     for c in a:\n" +
+                "        if state == 0:\n" +
+                "            if c == escape:\n" +
+                "                state = 1\n" +
+                "            elif c == separator:\n" +
+                "                result.append(token)\n" +
+                "                token = ''\n" +
+                "            else:\n" +
+                "                token += c\n" +
+                "        elif state == 1:\n" +
+                "            token += c\n" +
+                "            state = 0\n" +
+                "    result.append(token)\n" +
+                "    return result";
+      var code55 = "'''Tokenize a string with escaping'''\n" +
+                " \n" +
+                "from functools import reduce\n" +
+                " \n" +
+                " \n" +
+                "# tokenize :: Char -> Char -> String -> [String]\n" +
+                "def tokenize(delim):\n" +
+                "    '''A list of the tokens in a string, given\n" +
+                "       a delimiting char and an escape char.\n" +
+                "    '''\n" +
+                "    def go(esc, s):\n" +
+                "        def chop(a, x):\n" +
+                "            tkn, xs, escaped = a\n" +
+                "            literal = not escaped\n" +
+                "            isEsc = literal and (esc == x)\n" +
+                "            return ([], [tkn] + xs, isEsc) if (\n" +
+                "                literal and (delim == x)\n" +
+                "            ) else (tkn if isEsc else [x] + tkn, xs, isEsc)\n" +
+                " \n" +
+                "        tkn, xs, _ = reduce(chop, list(s), ([], [], False))\n" +
+                " \n" +
+                "        return list(reversed(\n" +
+                "            [''.join(reversed(x)) for x in [tkn] + xs]\n" +
+                "        ))\n" +
+                "    return lambda esc: lambda s: go(esc, s)\n" +
+                " \n" +
+                " \n" +
+                "# --------------------------TEST---------------------------\n" +
+                "# main :: IO ()\n" +
+                "def main():\n" +
+                "    '''Test'''\n" +
+                " \n" +
+                "    print(\n" +
+                "        tokenize('|')('^')(\n" +
+                "            \"one^|uno||three^^^^|four^^^|^cuatro|\"\n" +
+                "        )\n" +
+                "    )\n" +
+                " \n" +
+                " \n" +
+                "# MAIN ---\n" +
+                "if __name__ == '__main__':\n" +
+                "    main()";
     </script>
     <script>
       window.console = window.console || function(t) {};
@@ -337,7 +492,7 @@ a {
     <body translate="no">
     <section id="hire" style="height: fit-content;padding: 1rem;">    
         <h1 style="color: #000000;font-weight: bold;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
-          Random Numbers | ROSETTA ++</h1>
+          Tokenize a string with escaping | ROSETTA ++</h1>
     </section>
     <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
       <h1 style="font-weight: 500;">C++</h1>  
@@ -353,32 +508,6 @@ a {
     </section>
 
     <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
-      <h1 style="font-weight: 500;">C++ (03)</h1>  
-      <iframe src="cpp2.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
-    </section>
-    <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
-      <h3 style="color: #456FFF;">Software Metrics</h3>
-      <div class="button" id="button-5">
-        <div id="translate"></div>
-        <a><span onclick="cplus(code22,'p22')">Analyze</span></a>
-      </div>
-      <p id="p22"></p>
-    </section>
-    <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
-      <h1 style="font-weight: 500;">C++ (Using Mersene Twist Generator)</h1>  
-      <iframe src="cpp3.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
-    </section>
-    <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
-      <h3 style="color: #456FFF;">Software Metrics</h3>
-      <div class="button" id="button-5">
-        <div id="translate"></div>
-        <a><span onclick="cplus(code222,'p222')">Analyze</span></a>
-      </div>
-      <p id="p222"></p>
-    </section>
-
-
-    <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
       <h1 style="font-weight: 500;">JAVA</h1>  
       <iframe src="java1.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
     </section>
@@ -392,7 +521,7 @@ a {
     </section>
 
     <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
-      <h1 style="font-weight: 500;">javascript</h1>  
+      <h1 style="font-weight: 500;">javascript ES5 (Iterative)</h1>  
       <iframe src="js1.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
     </section>
     <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
@@ -405,7 +534,33 @@ a {
     </section>
 
     <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
-      <h1 style="font-weight: 500;">PYTHON (using random guess)</h1>  
+      <h1 style="font-weight: 500;">javascript (Functional)</h1>  
+      <iframe src="js2.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
+    </section>
+    <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
+      <h3 style="color: #456FFF;">Software Metrics</h3>
+      <div class="button" id="button-5">
+        <div id="translate"></div>
+        <a><span onclick="javascript(code44,'p44')">Analyze</span></a>
+      </div>
+      <p id="p44"></p>
+    </section>
+    <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
+      <h1 style="font-weight: 500;">javascript ES6</h1>  
+      <iframe src="js3.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
+    </section>
+    <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
+      <h3 style="color: #456FFF;">Software Metrics</h3>
+      <div class="button" id="button-5">
+        <div id="translate"></div>
+        <a><span onclick="javascript(code444,'p444')">Analyze</span></a>
+      </div>
+      <p id="p444"></p>
+    </section>
+
+
+    <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
+      <h1 style="font-weight: 500;">PYTHON (Procedural)</h1>  
       <iframe src="py1.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
     </section>
     <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
@@ -418,7 +573,7 @@ a {
     </section>
 
     <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
-      <h1 style="font-weight: 500;">PYTHON (Quick check of distribution)</h1>  
+      <h1 style="font-weight: 500;">PYTHON (Functional)</h1>  
       <iframe src="py2.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
     </section>
     <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
@@ -428,19 +583,6 @@ a {
         <a><span onclick="python(code55,'p55')">Analyze</span></a>
       </div>
       <p id="p55"></p>
-    </section>
-
-    <section id="hire" style="display: inline-block;width: 60%;margin-left: 1rem;padding: 0.5rem;">    
-      <h1 style="font-weight: 500;">PYTHON (Alternatively using random.normalvariate)</h1>  
-      <iframe src="py3.txt" frameborder="0" style="width: 100%;height: 100%;"></iframe>
-    </section>
-    <section style="font-size: 1.5rem;display: inline-block;width: 35%;margin-left: 2rem;padding-top: 0.5rem;">
-      <h3 style="color: #456FFF;">Software Metrics</h3>
-      <div class="button" id="button-5">
-        <div id="translate"></div>
-        <a><span onclick="python(code555,'p555')">Analyze</span></a>
-      </div>
-      <p id="p555"></p>
     </section>
 
     <script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-db44b196776521ea816683afab021f757616c80860d31da6232dedb8d7cc4862.js"></script>

@@ -1,17 +1,46 @@
-#include <random>
-#include <functional>
+#include <iostream>
+#include <string>
 #include <vector>
-#include <algorithm>
+ 
 using namespace std;
  
-int main()
-{
-  random_device seed;
-  mt19937 engine(seed());
-  normal_distribution<double> dist(1.0, 0.5);
-  auto rnd = bind(dist, engine);
+vector<string> tokenize(string input, char seperator, char escape) {
+	vector<string> output;
+	string token = "";
  
-  vector<double> v(1000);
-  generate(v.begin(), v.end(), rnd);
-  return 0;
+	bool inEsc = false;
+	for (char ch : input) {
+		if (inEsc) {
+			inEsc = false;
+		}
+		else if (ch == escape) {
+			inEsc = true;
+			continue;
+		}
+		else if (ch == seperator) {
+			output.push_back(token);
+			token = "";
+			continue;
+		}
+		token += ch;
+	}
+	if (inEsc) {
+		throw new exception("Invalid terminal escape");
+	}
+ 
+	output.push_back(token);
+	return output;
+}
+ 
+int main() {
+	string sample = "one^|uno||three^^^^|four^^^|^cuatro|";
+ 
+	cout << sample << endl;
+	cout << "[";
+	for (auto t : tokenize(sample, '|', '^')) {
+		cout << '"' << t << "\", ";
+	}
+	cout << "]" << endl;
+ 
+	return 0;
 }
