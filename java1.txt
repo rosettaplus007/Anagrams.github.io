@@ -1,44 +1,30 @@
+import java.net.*;
+import java.io.*;
 import java.util.*;
  
-public class TokenizeStringWithEscaping {
+public class WordsOfEqChars {
+    public static void main(String[] args) throws IOException {
+        URL url = new URL("http://wiki.puzzlers.org/pub/wordlists/unixdict.txt");
+        InputStreamReader isr = new InputStreamReader(url.openStream());
+        BufferedReader reader = new BufferedReader(isr);
  
-    public static void main(String[] args) {
-        String sample = "one^|uno||three^^^^|four^^^|^cuatro|";
-        char separator = '|';
-        char escape = '^';
- 
-        System.out.println(sample);
-        try {
-            System.out.println(tokenizeString(sample, separator, escape));
-        } catch (Exception e) {
-            System.out.println(e);
+        Map<String, Collection<String>> anagrams = new HashMap<String, Collection<String>>();
+        String word;
+        int count = 0;
+        while ((word = reader.readLine()) != null) {
+            char[] chars = word.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars);
+            if (!anagrams.containsKey(key))
+                anagrams.put(key, new ArrayList<String>());
+            anagrams.get(key).add(word);
+            count = Math.max(count, anagrams.get(key).size());
         }
-    }
  
-    public static List<String> tokenizeString(String s, char sep, char escape)
-            throws Exception {
-        List<String> tokens = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        reader.close();
  
-        boolean inEscape = false;
-        for (char c : s.toCharArray()) {
-            if (inEscape) {
-                inEscape = false;
-            } else if (c == escape) {
-                inEscape = true;
-                continue;
-            } else if (c == sep) {
-                tokens.add(sb.toString());
-                sb.setLength(0);
-                continue;
-            }
-            sb.append(c);
-        }
-        if (inEscape)
-            throw new Exception("Invalid terminal escape");
- 
-        tokens.add(sb.toString());
- 
-        return tokens;
-    }
+        for (Collection<String> ana : anagrams.values())
+            if (ana.size() >= count)
+                System.out.println(ana);
+    }   
 }

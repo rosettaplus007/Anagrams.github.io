@@ -1,37 +1,22 @@
-(function () {
-    'use strict';
+var fs = require('fs');
+var dictionary = fs.readFileSync('unixdict.txt', 'UTF-8').split('\n');
  
-    // tokenize :: String -> Character -> Character -> [String]
-    function tokenize(str, charDelim, charEsc) {
-        var dctParse = str.split('')
-            .reduce(function (a, x) {
+//group anagrams
+var sortedDict = dictionary.reduce(function (acc, word) {
+  var sortedLetters = word.split('').sort().join('');
+  if (acc[sortedLetters] === undefined) { acc[sortedLetters] = []; }
+  acc[sortedLetters].push(word);
+  return acc;
+}, {});
  
-                var blnEsc = a.esc,
-                    blnBreak = !blnEsc && x === charDelim,
-                    blnEscChar = !blnEsc && x === charEsc;
+//sort list by frequency
+var keysSortedByFrequency = Object.keys(sortedDict).sort(function (keyA, keyB) {
+  if (sortedDict[keyA].length < sortedDict[keyB].length) { return 1; }
+  if (sortedDict[keyA].length > sortedDict[keyB].length) { return -1; }
+  return 0;
+});
  
-                return {
-                    esc: blnEscChar,
-                    token: blnBreak ? '' : (
-                        a.token + (blnEscChar ? '' : x)
-                    ),
-                    list: a.list.concat(blnBreak ? a.token : [])
-                };
-            }, {
-                esc: false,
-                token: '',
-                list: []
-            });
- 
-        return dctParse.list.concat(
-            dctParse.token
-        );
-    }
- 
-    return tokenize(
-            'one^|uno||three^^^^|four^^^|^cuatro|',
-            '|','^'
-        )
-        .join('\n');
- 
-})();
+//print first 10 anagrams by frequency
+keysSortedByFrequency.slice(0, 10).forEach(function (key) {
+  console.log(sortedDict[key].join(' '));
+});
