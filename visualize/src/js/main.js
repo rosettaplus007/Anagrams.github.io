@@ -34,12 +34,13 @@ window.onload = function () {
         $('#test1').empty();
         $('#test2').empty();
         var ast = generateAst(code);
+        console.log(ast)
         renderVisuals(ast);
     });
 
     function generateAst(code) {
         var ast = esprima.parse(code);
-
+        console.log(ast)
         traverse(ast, {
             pre: function (node) {
                 if (node.body && !Array.isArray(node.body)) {
